@@ -2,6 +2,7 @@
 
 add_action('init', __NAMESPACE__ . '\\register_post_type_event', 10);
 add_action('init', __NAMESPACE__ . '\\register_post_type_registration', 10);
+add_action( 'wp', __NAMESPACE__ .  '\\registration_single_set_404' );
 
 function register_post_type_event()
 {
@@ -121,3 +122,16 @@ function register_post_type_registration()
 
     register_extended_post_type("registrations", $args, $names);
 }
+
+
+// Set status to 404 if single Registration URL is requested
+function registration_single_set_404() {
+    global $post;
+    global $wp_query;
+    if ( is_singular( 'registrations' ) ) {
+        $wp_query->set_404();
+        status_header( 404 );
+        nocache_headers();
+    }
+}
+  
